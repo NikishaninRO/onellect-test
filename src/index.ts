@@ -5,7 +5,7 @@ import {
 } from './utils.ts'
 
 const sequence = generateNumberSequence()
-console.log('original:', sequence)
+console.log('original:', sequence.toString())
 const sortedSequence = sortNumberSequence(sequence)
-console.log('sorted:', sortedSequence)
+console.log('sorted:', sortedSequence.toString())
 sendNumberSequence(sortedSequence)

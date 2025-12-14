@@ -6,9 +6,9 @@ import {
 } from './constants.ts'
 import { SortBy } from './enums.ts'
 
-function getRanomNumber(max: number, min: number): number {
+function getRandomNumber(max: number, min: number): number {
   if (max < min) {
-    throw new Error('getRanomNumber: max number must be more than min number')
+    throw new Error('getRandomNumber: max number must be more than min number')
   }
 
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -24,9 +24,9 @@ function quickSort(data: number[]): number[] {
   const rightPart: number[] = []
   const middleValues: number[] = []
   for (const num of data) {
-    if (compareFunc(num, pivot)) {
+    if (compare(num, pivot)) {
       leftPart.push(num)
-    } else if (compareFunc(pivot, num)) {
+    } else if (compare(pivot, num)) {
       rightPart.push(num)
     } else {
       middleValues.push(num)
@@ -48,49 +48,57 @@ function mergeSort(data: number[]): number[] {
 
 function merge(leftPart: number[], rightPart: number[]): number[] {
   const result: number[] = []
-  let i = 0
-  let j = 0
-  while (i < leftPart.length || j < rightPart.length) {
-    const leftValue = leftPart[i]
-    const rightValue = rightPart[j]
-    if (i >= leftPart.length) {
+  let leftPartIndex = 0
+  let rightPartIndex = 0
+  while (leftPartIndex < leftPart.length || rightPartIndex < rightPart.length) {
+    const leftValue = leftPart[leftPartIndex]
+    const rightValue = rightPart[rightPartIndex]
+    if (leftPartIndex >= leftPart.length) {
       if (rightValue != null) {
         result.push(rightValue)
       }
-      j++
+      rightPartIndex++
       continue
     }
 
-    if (j >= rightPart.length) {
+    if (rightPartIndex >= rightPart.length) {
       if (leftValue != null) {
         result.push(leftValue)
       }
-      i++
+      leftPartIndex++
       continue
     }
 
     if (rightValue != null && leftValue != null) {
-      if (compareFunc(leftValue, rightValue)) {
+      if (compare(leftValue, rightValue)) {
         result.push(leftValue)
-        i++
+        leftPartIndex++
       } else {
         result.push(rightValue)
-        j++
+        rightPartIndex++
       }
     }
   }
   return result
 }
 
-function compareFunc(left: number, right: number) {
-  return process.env.SORT_BY === SortBy.ASCEND ? left < right : left > right
+function compare(left: number, right: number): boolean {
+  const sortBy =  process.env.SORT_BY
+  switch (sortBy) {
+    case SortBy.ASCEND:
+      return left < right
+    case SortBy.DESCEND:
+      return left > right
+    default:
+      return left < right
+  }
 }
 
 export function generateNumberSequence(): number[] {
-  const numbersCount = getRanomNumber(NUMBERS_COUNT_MAX, NUMBERS_COUNT_MIN)
+  const numbersCount = getRandomNumber(NUMBERS_COUNT_MAX, NUMBERS_COUNT_MIN)
   const result = []
   for (let i = 0; i < numbersCount; ++i) {
-    const randomValue = getRanomNumber(NUMBER_VALUE_MAX, NUMBER_VALUE_MIN)
+    const randomValue = getRandomNumber(NUMBER_VALUE_MAX, NUMBER_VALUE_MIN)
     result.push(randomValue)
   }
   return result
